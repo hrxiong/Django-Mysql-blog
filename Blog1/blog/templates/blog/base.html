@@ -1,0 +1,19 @@
+{% load staticfiles %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+<p>upper</p>
+<a>Hello,{{user.username}}.</a>
+<a href = "{% url 'users:logout' %}">log out</a>
+<img src="/static/{{account.photo}}" alt=""/> 
+
+<p>index</p>
+<a href = "{% url 'blog:mainpage' %}">mainpage</a>
+<a href = "{% url 'blog:blogs' %}">blogs</a>
+<a href = "{% url 'blog:friends' %}">friends</a>
+<a href = "{% url 'blog:messages' %}">messages</a>
+<a href = "{% url 'blog:account' %}">account</a>
+
+<p>body</p>
+{% block body %}
+{% endblock %}

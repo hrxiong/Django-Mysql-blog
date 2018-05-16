@@ -1,0 +1,21 @@
+
+{% extends "blog/base.html" %}
+{% block body %}
+<div class="form-wrapper">
+   <form method="post" action="{% url 'blog:edit_account' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% for field in form %}
+           <div class="fieldWrapper">
+			
+			{{ field.label_tag }} {{ field }}{{ field.errors }}
+			
+		   </div>
+		{% endfor %}
+      <div class="button-wrapper submit">
+         <button name="submit" class="btn btn-primary">save change</button>
+      </div>
+   </form>
+</div>
+
+
+{% endblock %}

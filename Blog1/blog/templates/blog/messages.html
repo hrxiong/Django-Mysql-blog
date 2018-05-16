@@ -1,0 +1,62 @@
+{% extends "blog/base.html" %}
+{% block body %}
+
+<p>messages list</p>
+
+{% for m in message %}
+	
+
+	{% for key,value in m.items %}
+		{% if key == 'photo' %}
+		<img src="/static/{{value}}" alt=""/>
+		{% elif key != 'status' and key !=  'checkid' %}
+		<li> {{key}}:{{value}} </li>
+		{% endif %}
+	{% endfor %}
+	
+	{% if m.status == 0 %}
+	<p>The add request have been sent.Please wait.</p>
+	{% elif m.status == 1 %}
+	<p>added.</p>
+	{% elif m.status == 2 %}
+	<p>failed</p>
+	{% elif m.status == 3 %}
+
+	<p><!--
+		<button onclick="sendmessage('add', '{{m.checkid}}')" > add </button>
+		<button onclick="sendmessage('refuse', '{{m.checkid}}')" > refuse </button>-->
+		<button><a href="{% url 'blog:message_op' m.checkid 0 %}">add</a>  </button>
+		<button><a href="{% url 'blog:message_op' m.checkid 1 %}">refuse</a>  </button>
+	</p>
+	{% elif m.status == 4 %}
+	<p>added.</p>
+	{% elif m.status == 5 %}
+	<p>refused.</p>
+	{% endif %}
+{% endfor %}
+
+<script>/*
+	function sendmessage(opt,id){
+		form = new FormData();
+		form.append('opt',opt);
+		form.append('checkid',id);
+		var xhr = new XMLHttpRequest();
+		
+		if (window.XMLHttpRequest) {// code for all new browsers
+			xhr = new XMLHttpRequest();
+		}
+		else if (window.ActiveXObject) {// code for IE5 and IE6
+			xhr = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		if (xhr != null)
+		{
+			xhr.onload=function(){
+				}
+			xhr.open('post','', true);
+			xhr.send(form);
+		}
+	};*/
+</script>
+
+
+{% endblock %}

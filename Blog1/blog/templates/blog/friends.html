@@ -1,0 +1,48 @@
+{% extends "blog/base.html" %}
+{% block body %}
+<a href="{% url 'blog:add_friends' %}">add new friends</a>
+<p>friends list</p>
+
+<form method="post" action="{% url 'blog:friends' %}" enctype="multipart/form-data">
+	{% csrf_token %}
+	{% for field in form %}
+	<div class="fieldWrapper">
+		
+		{{ field.label_tag }} {{ field }}{{ field.errors }}
+		
+	</div>
+	{% endfor %}
+	<div class="button-wrapper submit">
+		<button name="submit" class="btn btn-primary">search</button>
+	</div>
+</form>
+
+{% for m in info_list %}
+	<!--<button onclick="delete_friend('{{ m.username }}')" >delete</button>-->
+	{% for key,value in m.items %}
+		{% if key == 'photo' %}
+		<a href="{% url 'blog:friends_info' m.username %}"><img src="/static/{{value}}" alt=""/></a>
+		{% else %}
+		<li> {{key}}:{{value}} </li>
+		{% endif %}
+	{% endfor %}
+{% endfor %}
+
+<script>
+/*function delete_friend(username){
+	var form = new FormData();
+	form.append('username',username);
+	var xhr = new XMLHttpRequest();
+	if (xhr != null)
+	{
+		xhr.onload=function(){
+			location.reload();
+		};
+		xhr.open('post','', true);
+		xhr.send(form);
+		
+	}
+};*/
+</script>
+
+{% endblock %}

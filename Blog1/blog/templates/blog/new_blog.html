@@ -1,0 +1,37 @@
+{% extends "blog/base.html" %}
+{% load staticfiles %}
+{% block body %}
+<link rel="stylesheet" href="{% static 'css/image.css' %}">
+<script type="text/javascript" src="{% static 'js/uploadImg.js' %}"></script>
+
+<!--<form action="{% url 'blog:new_blog' %}" method="POST" enctype="multipart/form-data">-->
+	
+	<!--<input type="file" multiple="multiple" name="listInput" id="listInput" value="" />-->
+	<div style="width: 100%;height: 100vh;position: relative;">
+		<form id="upBox">
+			{% csrf_token %}
+			{{ form }}
+			<div id="inputBox"><input type="file" title="请选择图片" id="file" multiple accept="image/png,image/jpg,image/gif,image/JPEG"/>点击选择图片</div>
+			<div id="imgBox"></div>
+			<a id="btn">上传</a>
+		</form>
+	</div>
+	<!--<button id="send_blog" class="btn btn-danger" type="submit">send</button>-->
+	<input type="hidden" name="next" value="{% url 'blog:blogs' %}" />
+</form>
+
+<script type="text/javascript">
+	imgUpload({
+		inputId:'file', //input框id
+		imgBox:'imgBox', //图片容器id
+		buttonId:'btn', //提交按钮id
+		upUrl:' ',  //提交地址
+		data:'photos', //参数名
+		num:"5",//上传个数
+		txt:'id_text'
+	})
+</script>
+
+{% endblock %}
+
+ 

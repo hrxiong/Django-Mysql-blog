@@ -1,0 +1,35 @@
+{% extends "blog/base.html" %}
+{% block body %}
+	<form method="post" action="{% url 'blog:add_friends' %}" enctype="multipart/form-data">
+	{% csrf_token %}
+	{% for field in form %}
+		<div class="fieldWrapper">
+			
+			{{ field.label_tag }} {{ field }}{{ field.errors }}
+			
+		</div>
+		{% endfor %}
+		<div class="button-wrapper submit">
+			<button name="submit" class="btn btn-primary">search</button>
+		</div>
+	</form>
+	{% if not status %}
+		<p>please input infomation to search user.</p>
+	{% elif info_list %}
+		{% for info in info_list %}
+			{% if info.username != user.username %}
+				<a href="{% url 'blog:add_by_username' info.username %}">add</a>
+				{% for key,value in info.items %}
+					{% if key == 'photo' %}
+					<img src="/static/{{value}}" alt=""/>
+					{% else %}
+					<li> {{key}}:{{value}} </li>
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+	{% else %}
+		<p>No such user.</p>
+	{% endif %}
+
+{% endblock %}

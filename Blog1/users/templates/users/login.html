@@ -1,0 +1,23 @@
+
+{% extends "users/base.html" %}
+{% block body %}
+
+<div class="container">
+	<h2>Log in your account</h2>
+</div>
+
+
+<div class="container">
+	<form method="post" action="{% url 'users:login' %}" class="form">
+		{% csrf_token %}
+		{{ form }}
+		
+
+		<button name = "submit" class="btn btn-primary" >login</button>
+
+		<input type="hidden" name="next" value="{% url 'blog:mainpage' %}" />
+	</form>
+</div>
+
+{% endblock %}
+

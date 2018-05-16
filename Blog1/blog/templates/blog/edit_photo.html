@@ -1,0 +1,27 @@
+{% extends "blog/base.html" %}
+{% block body %}
+
+<script>
+$(document).ready(function(){
+	$('#InputFile').change(function () {
+		var file = this.files[0];
+		var reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = function () {
+			$('#show_img')[0].src = this.result
+		}
+	});
+});
+</script>
+<form action="{% url 'blog:edit_photo' %}" method="POST" enctype="multipart/form-data">
+	{% csrf_token %}
+	<div class="updateImg">
+	<img src="/static/{{account.photo}}" id="show_img" alt="" class="show_img" /> </div>
+
+	<input name="photo" type="file" id="InputFile" >            
+
+	<button id="photo" class="btn btn-danger" type="submit">上传头像</button>
+	<input type="hidden" name="next" value="{% url 'blog:edit_photo' %}" />
+</form>
+
+{% endblock %}

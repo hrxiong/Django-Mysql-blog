@@ -1,0 +1,35 @@
+{% extends "blog/base.html" %}
+{% block body %}
+
+<p>friends infomation</p>
+
+	{% if info.is_friends %}
+	<button onclick="delete_friend('{{ info.username }}')" >delete</button>
+	{% else %}
+	<button><a href="{% url 'blog:add_by_username' info.username %}">add</a></button>
+	{% endif %}
+	{% for key,value in info.items %}
+		{% if key == 'photo' %}
+		<img src="/static/{{value}}" alt=""/>
+		{% elif  key != 'is_friends' %}
+		<li> {{key}}:{{value}} </li>
+		{% endif %}
+	{% endfor %}
+
+<script>
+function delete_friend(username){
+	var form = new FormData();
+	form.append('username',username);
+	var xhr = new XMLHttpRequest();
+	if (xhr != null)
+	{
+		xhr.onload=function(){
+			window.history.back();
+		};
+		xhr.open('post','', true);
+		xhr.send(form);
+	}
+};
+</script>
+
+{% endblock %}
