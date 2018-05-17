@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     #my app
     'users',
     'blog',
+    'bootstrap3',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +130,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/users/login/'
+
+BOOTSTRAP3 = { 'include_jquery': True,}

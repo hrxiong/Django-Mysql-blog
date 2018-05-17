@@ -1,19 +1,69 @@
 {% load staticfiles %}
 
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="Haoran's Blog" content="width=device-width, initial-scale=1"/>
+	<script src="{% static 'js/jQuery.js' %}"></script>
+	<script src="{% static 'js/materialize.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
 
-<p>upper</p>
-<a>Hello,{{user.username}}.</a>
-<a href = "{% url 'users:logout' %}">log out</a>
-<img src="/static/{{account.photo}}" alt=""/> 
+<!--
+  <nav> navbar content here </nav>
+-->
+<nav>
+  <div class="nav-wrapper">
+    <a href="#!" class="brand-logo">Logo</a>
+    <ul class="right hide-on-med-and-down">
+      <li><a href="sass.html">Sass</a></li>
+      <li><a href="badges.html">Components</a></li>
+      <!-- Dropdown Trigger -->
+      <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Dropdown<i class="material-icons right">arrow_drop_down</i></a></li>
+    </ul>
+  </div>
+</nav>
 
-<p>index</p>
-<a href = "{% url 'blog:mainpage' %}">mainpage</a>
-<a href = "{% url 'blog:blogs' %}">blogs</a>
-<a href = "{% url 'blog:friends' %}">friends</a>
-<a href = "{% url 'blog:messages' %}">messages</a>
-<a href = "{% url 'blog:account' %}">account</a>
+  <ul id="slide-out" class="sidenav">
+    <li><div class="user-view">
+      <div class="background">
+        <img src="images/office.jpg">
+      </div>
+      <a href="#user"><img class="circle" src="images/yuna.jpg"></a>
+      <a href="#name"><span class="white-text name">John Doe</span></a>
+      <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+    </div></li>
+    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
+    <li><a href="#!">Second Link</a></li>
+    <li><div class="divider"></div></li>
+    <li><a class="subheader">Subheader</a></li>
+    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+  </ul>
+  <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
 
-<p>body</p>
-{% block body %}
-{% endblock %}
+<script>
+$(document).ready(function(){
+	$('.sidenav').sidenav();
+});
+</script>
+	
+	<p>upper</p>
+	<a>Hello,{{user.username}}.</a>
+	<a href = "{% url 'users:logout' %}">log out</a>
+	<img src="/static/{{account.photo}}" alt=""/> 
+
+	<p>index</p>
+	<a href = "{% url 'blog:mainpage' %}">mainpage</a>
+	<a href = "{% url 'blog:blogs' %}">blogs</a>
+	<a href = "{% url 'blog:friends' %}">friends</a>
+	<a href = "{% url 'blog:messages' %}">messages</a>
+	<a href = "{% url 'blog:account' %}">account</a>
+	<p>body</p>
+	{% block body %}
+	{% endblock %}
+
+</body>
+</html>

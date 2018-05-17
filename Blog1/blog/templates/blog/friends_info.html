@@ -8,6 +8,7 @@
 	{% else %}
 	<button><a href="{% url 'blog:add_by_username' info.username %}">add</a></button>
 	{% endif %}
+<!--
 	{% for key,value in info.items %}
 		{% if key == 'photo' %}
 		<img src="/static/{{value}}" alt=""/>
@@ -15,6 +16,11 @@
 		<li> {{key}}:{{value}} </li>
 		{% endif %}
 	{% endfor %}
+-->
+	<p><img src="/static/{{info.userinfo.photo}}" alt=""/></p>
+	<p>username:{{info.user.username}}</p>
+	<p>nickname:{{info.userinfo.nickname}}</p>
+	<p>motto:{{info.userinfo.motto}}</p>
 
 <script>
 function delete_friend(username){

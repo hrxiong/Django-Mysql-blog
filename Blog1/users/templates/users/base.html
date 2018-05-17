@@ -1,11 +1,42 @@
+{% load staticfiles %}
 
-<a href="{% url 'users:register' %}">
-	register
-</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="Haoran's Blog" content="width=device-width, initial-scale=1"/>
+	<script src="{% static 'js/jQuery.js' %}"></script>
+	<script src="{% static 'js/materialize.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/materialize.css' %}">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
+	<script src="https://cdn.bootcss.com/particles.js/2.0.0/particles.min.js"></script>
+	<link rel="stylesheet" href="{% static 'css/background.css' %}">
+	
+</head>
+<body>
+	<div class="fixed-action-btn">
+	  <a class="btn-floating btn-large grey lighten-1">
+		<i class="large material-icons">menu</i>
+	  </a>
+	  <ul>
+	    <li><a href="{% url 'users:login' %}"  class="btn-floating green tooltipped" data-position="left" data-tooltip="Sign in"><i class="material-icons">playlist_play</i></a></li>
+		<li><a href="{% url 'users:register' %}" class="btn-floating blue tooltipped" data-position="left" data-tooltip="Sign up"><i class="material-icons">playlist_add</i></a></li>
+		<li><a href="{% url 'blog:index' %}"  class="btn-floating red tooltipped" data-position="left" data-tooltip="Mainpage"><i class="material-icons">reorder</i></a></li>
+	  </ul>
+	</div>
 
-<a href="{% url 'users:login' %}">
-	login
-</a>
 
-{% block body %}
-{% endblock %}
+<div id="particles-js"></div>
+	{% block body %}
+	{% endblock %}
+<script src="{% static 'js/background.js' %}"></script>
+<script>
+$(document).ready(function(){
+    $('.fixed-action-btn').floatingActionButton();
+    $('.tooltipped').tooltip();
+});
+</script>
+</body>
+</html>

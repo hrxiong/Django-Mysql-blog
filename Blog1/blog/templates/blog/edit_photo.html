@@ -1,6 +1,10 @@
-{% extends "blog/base.html" %}
-{% block body %}
 
+{% extends "blog/base.html" %}
+
+{% load staticfiles %}
+
+{% block body %}
+<!--
 <script>
 $(document).ready(function(){
 	$('#InputFile').change(function () {
@@ -23,5 +27,51 @@ $(document).ready(function(){
 	<button id="photo" class="btn btn-danger" type="submit">上传头像</button>
 	<input type="hidden" name="next" value="{% url 'blog:edit_photo' %}" />
 </form>
+-->
+<link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}" />
+<link href="{% static 'css/jquery.Jcrop.min.css' %}" rel="stylesheet" type="text/css" />
+<style>
+	.error {
+		font-size: 18px;
+		font-weight: bold;
+		color: red;
+		margin:10px 0
+	}
+	label{width:60px;display: inline-block}
+	.info li{margin:10px 0}
+</style>
+<div class="container">
+	<div id="demo" class="demo">
+		<h2 class="title">PHP+jQuery+HTML5头像图片裁剪上传</h2>
+		<form id="upload_form" enctype="multipart/form-data" method="post" action="{% url 'blog:edit_photo' %}" onsubmit="return checkForm()">
+			<!-- hidden crop params -->
+			<input type="hidden" id="x1" name="x1"autocomplete="off" />
+			<input type="hidden" id="y1" name="y1" autocomplete="off"/>
+			<input type="hidden" id="x2" name="x2"autocomplete="off" />
+			<input type="hidden" id="y2" name="y2"autocomplete="off" />
+
+
+			<input type="file" name="image_file" id="image_file" onchange="fileSelectHandler()"/>
+
+			<div class="error">注意：上传前，先截图</div>
+			<div class="step2">
+				<img id="preview" style="width:100%" />
+<!--
+				info of img
+-->
+				<input type="hidden" id="filesize" name="filesize" class="input" autocomplete="off" />
+				<input type="hidden" id="filetype" name="filetype" class="input"autocomplete="off"/>
+				<input type="hidden" id="filedim" name="filedim" class="input"autocomplete="off"/>
+				<input type="hidden" id="w" name="w" class="input"autocomplete="off"/>
+				<input type="hidden" id="h" name="h" class="input"autocomplete="off"/>
+				<input type="hidden" id="divw" name="divw" class="input"autocomplete="off"/>
+				<input type="submit" value="上传" class="btn" />
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript" src="{% static 'js/tempjquery.js' %}"></script> 
+<script src="/static/js/jquery.Jcrop.min.js"></script>
+<script src="{% static 'js/script.js' %}"></script>
 
 {% endblock %}

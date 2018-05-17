@@ -11,7 +11,7 @@
 	{% if blog.senduser.nickname %}
 	<p>{{blog.senduser.nickname}}</p>
 	{% else %}
-	<p>{{blog.username}}</p>
+	<p>{{blog.user.username}}</p>
 	{% endif %}
 	{% if blog.senduser.id == account.id %}
 	<a href="{% url 'blog:delete_blog' blog.id %}">delete</a>
@@ -32,7 +32,7 @@
 		{% if comment.comment_userinfo.nickname %}
 		<p>{{comment.comment_userinfo.nickname}}</p>
 		{% else %}
-		<p>{{comment.comment_username}}</p>
+		<p>{{comment.comment_user.username}}</p>
 		{% endif %}
 		<p><img src="/static/{{comment.comment_userinfo.photo}}" alt=""/></p>
 		{% if comment.comment_userinfo.id == account.id or blog.senduser.id == account.id %}

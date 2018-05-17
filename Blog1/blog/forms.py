@@ -15,6 +15,17 @@ class UserinfoForm(forms.Form):
 	address = forms.CharField(label='address', max_length=45, required=False)
 	motto = forms.CharField(label='motto', max_length=145, required=False)
 	
+	sex.widget.attrs.update({'class': 'dropdown-trigger waves-effect'})
+	birthday.widget.attrs.update({'class': 'datepicker'})
+	# ~ class Meta:
+		# ~ model = Loan
+		# ~ fields = ['empno', 'isbn', 'loan_date',]
+		# ~ widgets = {
+			# ~ 'empno': forms.Select(attrs={'class': 'dropdown-trigger btn'}),
+			# ~ 'isbn': forms.Select(attrs={'class': 'dropdown-trigger btn'}),
+		# ~ }
+	
+	
 	def clean_first_name(self):
 		c_first_name = self.cleaned_data.get('first_name')
 		if len(c_first_name) >50:
@@ -79,11 +90,13 @@ class PwdChangeForm(forms.Form):
 class AddFriendForm(forms.Form):
 	text = forms.CharField(label='Search Account', max_length=50)
 	choose_type = forms.ChoiceField(label='type', choices=(('Username','Username'),('Nickname','Nickname')))
+	choose_type.widget.attrs.update({'class': 'dropdown-trigger waves-effect'})
 
 class SearchFriendForm(forms.Form):
 	text = forms.CharField(label='Search Friend', max_length=50, required=False)
 	choose_type = forms.ChoiceField(label='type', choices=(('Username','Username'),('Nickname','Nickname')))
-
+	choose_type.widget.attrs.update({'class': 'dropdown-trigger waves-effect'})
+	
 class BlogForm(forms.Form):
 	text = forms.CharField(label='blog', max_length=200, required=False)
 

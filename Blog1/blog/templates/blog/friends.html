@@ -19,6 +19,7 @@
 
 {% for m in info_list %}
 	<!--<button onclick="delete_friend('{{ m.username }}')" >delete</button>-->
+<!--
 	{% for key,value in m.items %}
 		{% if key == 'photo' %}
 		<a href="{% url 'blog:friends_info' m.username %}"><img src="/static/{{value}}" alt=""/></a>
@@ -26,6 +27,11 @@
 		<li> {{key}}:{{value}} </li>
 		{% endif %}
 	{% endfor %}
+-->
+	<p><a href="{% url 'blog:friends_info' m.user.username %}"><img src="/static/{{m.userinfo.photo}}" alt=""/></a></p>
+	<p>username: {{m.user.username}}</p>
+	<p>nickname: {{m.userinfo.nickname}}</p>
+	<p>motto: {{m.userinfo.motto}}</p>
 {% endfor %}
 
 <script>

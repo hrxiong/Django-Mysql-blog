@@ -1,23 +1,49 @@
-
 {% extends "users/base.html" %}
+{% load bootstrap3 %}
+
+{% block navbar %}
+<a href="{% url 'users:login' %}" class="breadcrumb">
+	Sign in
+</a>
+{% endblock %}
+
+
 {% block body %}
+<style>
+div#login-contain{
+	height:95vh;
+}
+</style>	
 
-<div class="container">
-	<h2>Log in your account</h2>
-</div>
 
-
-<div class="container">
-	<form method="post" action="{% url 'users:login' %}" class="form">
+<div id="login-contain" class="valign-wrapper row login-box ">
+	<div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
+		<form method="post" action="{% url 'users:login' %}" class="form">
 		{% csrf_token %}
-		{{ form }}
-		
-
-		<button name = "submit" class="btn btn-primary" >login</button>
-
-		<input type="hidden" name="next" value="{% url 'blog:mainpage' %}" />
-	</form>
+			<div class="card-content">
+				<span class="card-title">Sign in</span>
+				<div class="row">
+					<div class="input-field col s12">
+					{% bootstrap_form form %}
+					</div>
+				</div>
+			</div>
+			<div class="card-action right-align">
+				<button type="reset" id="reset" class="btn-flat grey-text waves-effect" >reset</button>
+				<button name = "submit" class="btn waves-effect waves-light" >
+					login<i class="material-icons right">send</i>
+				</button>
+			</div>
+			<input type="hidden" name="next" value="{% url 'blog:mainpage' %}" />
+		</form>
+	</div>
 </div>
+
+<script>
+$("#reset").on("click", function() {
+	$('label').removeClass('active');
+});
+</script>
 
 {% endblock %}
 

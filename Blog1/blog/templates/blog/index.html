@@ -1,9 +1,68 @@
-<a href="{% url 'users:register' %}">
-	register
-</a>
+{% load staticfiles %}
 
-<a href="{% url 'users:login' %}">
-	login
-</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="Haoran's Blog" content="width=device-width, initial-scale=1" />
+	
+	<script src="{% static 'js/jQuery.js' %}"></script>
+	<script src="{% static 'js/materialize.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'css/materialize.css' %}">
+	
 
-<p>this is index page</p>
+	<style>
+
+	img {
+    width: 100%;
+	}
+	.parallax-container {
+      height: 73vh;
+    }
+    #welcome {
+		height: 27vh;
+	}
+	</style>
+</head>
+<body>
+	<div class="fixed-action-btn">
+	  <a class="btn-floating btn-large grey lighten-1">
+		<i class="large material-icons">menu</i>
+	  </a>
+	  <ul>
+	    <li><a href="{% url 'users:login' %}"  class="btn-floating green tooltipped" data-position="left" data-tooltip="Sign in"><i class="material-icons">playlist_play</i></a></li>
+		<li><a href="{% url 'users:register' %}" class="btn-floating blue tooltipped" data-position="left" data-tooltip="Sign up"><i class="material-icons">playlist_add</i></a></li>
+		<li><a href="{% url 'blog:index' %}"  class="btn-floating red tooltipped" data-position="left" data-tooltip="Mainpage"><i class="material-icons">reorder</i></a></li>
+	  </ul>
+	</div>
+
+	<div class="parallax-container">
+      <div class="parallax"><img src="/static/mypicture/sea.jpg " alt=""> </div>
+    </div>
+    <div id="welcome" class="section white">
+      <div class="row container">
+        <h2 class="header">
+			Haoran's Blog
+        </h2>
+        <p class="grey-text text-darken-3 lighten-3"> Only freedom from vanity can show one’s lofty aspirations. Only tranquility of mind can help him to achieve something really lasting.</p>
+      </div>
+    </div>
+    <div class="parallax-container">
+      <div class="parallax"><img src="/static/mypicture/boat.jpg"></div>
+    </div>
+
+
+<script>
+  $(document).ready(function(){
+    $('.parallax').parallax();
+    $('.fixed-action-btn').floatingActionButton();
+    $('.tooltipped').tooltip();
+  });
+</script>
+
+
+</body>
+</html>

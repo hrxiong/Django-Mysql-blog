@@ -6,6 +6,7 @@
 {% for m in message %}
 	
 
+<!--
 	{% for key,value in m.items %}
 		{% if key == 'photo' %}
 		<img src="/static/{{value}}" alt=""/>
@@ -13,6 +14,11 @@
 		<li> {{key}}:{{value}} </li>
 		{% endif %}
 	{% endfor %}
+-->
+	<p><img src="/static/{{m.userinfo.photo}}" alt=""/></p>
+	<p>username:{{m.user.username}}</p>
+	<p>nickname:{{m.userinfo.nickname}}</p>
+	<p>motto:{{m.userinfo.motto}}</p>
 	
 	{% if m.status == 0 %}
 	<p>The add request have been sent.Please wait.</p>
@@ -21,6 +27,7 @@
 	{% elif m.status == 2 %}
 	<p>failed</p>
 	{% elif m.status == 3 %}
+	<p>请求添加你为好友！</p>
 
 	<p><!--
 		<button onclick="sendmessage('add', '{{m.checkid}}')" > add </button>

@@ -38,7 +38,8 @@ def refactoringBlog(obj):
 	#blog info
 	temp['id'] = obj[0]
 	temp['senduser'] = UsersUserinfo.objects.get(id=obj[1])
-	temp['username'] = User.objects.get(id=temp['senduser'].user_id).username
+	#temp['username'] = User.objects.get(id=temp['senduser'].user_id).username
+	temp['user'] = User.objects.get(id=temp['senduser'].user_id)
 	temp['content'] = obj[2]
 	temp['time'] = obj[3]
 	temp['photo'] = BlogPhoto.objects.filter(blog_id=obj[0])
@@ -50,7 +51,8 @@ def refactoringBlog(obj):
 	for comment in comments:
 		com = {}
 		com['comment_userinfo'] = UsersUserinfo.objects.get(id=comment.creator_id)
-		com['comment_username'] = User.objects.get(id=com['comment_userinfo'].user_id).username
+		#com['comment_username'] = User.objects.get(id=com['comment_userinfo'].user_id).username
+		com['comment_user'] = User.objects.get(id=com['comment_userinfo'].user_id)
 		com['comment'] = comment
 		coms.append(com)
 	temp['comments'] = coms
@@ -269,18 +271,21 @@ def get_friends_info(user_info_id):
 	for u in user_list1:
 		info_temp = UsersUserinfo.objects.get(id=u.user2_id)
 		user_temp = User.objects.get(id=info_temp.user_id)
-		temp = {'photo': info_temp.photo, 'username': user_temp.username,
-				'nickname': info_temp.nickname, 'motto': info_temp.motto}
+		'''temp = {'photo': info_temp.photo, 'username': user_temp.username,
+				'nickname': info_temp.nickname, 'motto': info_temp.motto}'''
+		temp = {'user': user_temp, 'userinfo': info_temp, 'for_sort': user_temp.username}
 		info_list.append(temp)
 		
 	user_list2 = Friends.objects.filter(user2_id=user_info_id)
 	for u in user_list2:
 		info_temp = UsersUserinfo.objects.get(id=u.user1_id)
 		user_temp = User.objects.get(id=info_temp.user_id)
-		temp = {'photo': info_temp.photo, 'username': user_temp.username,
-				'nickname': info_temp.nickname, 'motto': info_temp.motto}
+		'''temp = {'photo': info_temp.photo, 'username': user_temp.username,
+				'nickname': info_temp.nickname, 'motto': info_temp.motto}'''
+		temp = {'user': user_temp, 'userinfo': info_temp, 'for_sort': user_temp.username}
 		info_list.append(temp)
-	info_list = sorted(info_list, key=itemgetter('username'))
+	#info_list = sorted(info_list, key=itemgetter('username'))
+	info_list = sorted(info_list, key=itemgetter('for_sort'))
 	return info_list
 
 
@@ -301,14 +306,16 @@ def friends(request):
 			if form.cleaned_data['choose_type'] == 'Username':
 				if choose_text:
 					for item in info_list:
-						if item['username'] == choose_text:
+						#if item['username'] == choose_text:
+						if item['user'].username == choose_text:
 							choose_info_list.append(item)
 				else:
 					choose_info_list = info_list
 			else:
 				if choose_text:
 					for item in info_list:
-						if item['nickname'] == choose_text:
+						#if item['nickname'] == choose_text:
+						if item['userinfo'].nickname == choose_text:
 							choose_info_list.append(item)
 				else:
 					choose_info_list = info_list
@@ -356,8 +363,9 @@ def friends_info(request,f_username):
 	if c1 or c2:
 		is_friends = 1
 		
-	info = {'photo': friend_info.photo, 'username': friend.username,
-			'nickname': friend_info.nickname, 'motto': friend_info.motto, 'is_friends': is_friends}
+	'''info = {'photo': friend_info.photo, 'username': friend.username,
+			'nickname': friend_info.nickname, 'motto': friend_info.motto, 'is_friends': is_friends}'''
+	info = {'user': friend, 'userinfo': friend_info, 'is_friends': is_friends}
 	context = {'account': user_info, 'info': info}
 	return render(request, 'blog/friends_info.html', context)
 
@@ -429,8 +437,10 @@ def get_message_list(user_info_id):
 	for u in user_list1:
 		info_temp = UsersUserinfo.objects.get(id=u.user2_ch_id)
 		user_temp = User.objects.get(id=info_temp.user_id)
-		temp = {'photo': info_temp.photo, 'username': user_temp.username,
-				'nickname': info_temp.nickname, 'motto': info_temp.motto,
+		# ~ temp = {'photo': info_temp.photo, 'username': user_temp.username,
+				# ~ 'nickname': info_temp.nickname, 'motto': info_temp.motto,
+				# ~ 'time': u.applicationtime, 'checkid': u.id}
+		temp = {'user': user_temp,'userinfo': info_temp, 'for_sort': user_temp.username,
 				'time': u.applicationtime, 'checkid': u.id}
 		if u.checked == 'N':
 			temp['status'] = 0 #需要等待
@@ -445,8 +455,10 @@ def get_message_list(user_info_id):
 	for u in user_list2:
 		info_temp = UsersUserinfo.objects.get(id=u.user1_ch_id)
 		user_temp = User.objects.get(id=info_temp.user_id)
-		temp = {'photo': info_temp.photo, 'username': user_temp.username,
-				'nickname': info_temp.nickname, 'motto': info_temp.motto,
+		# ~ temp = {'photo': info_temp.photo, 'username': user_temp.username,
+				# ~ 'nickname': info_temp.nickname, 'motto': info_temp.motto,
+				# ~ 'time': u.applicationtime, 'checkid': u.id}
+		temp = {'user': user_temp,'userinfo': info_temp, 'for_sort': user_temp.username,
 				'time': u.applicationtime, 'checkid': u.id}
 		if u.checked == 'N':
 			temp['status'] = 3 #需要确认
@@ -455,7 +467,7 @@ def get_message_list(user_info_id):
 		else:
 			temp['status'] = 5 #已拒绝
 		message.append(temp)
-	message = sorted(message, key=itemgetter('time','username'), reverse=True)
+	message = sorted(message, key=itemgetter('time','for_sort'), reverse=True)
 	return message
 
 @login_required
@@ -489,23 +501,35 @@ def message_op(request, checkid, op):
 def account(request):
 	user = User.objects.get(id=request.user.id)
 	user_info = UsersUserinfo.objects.get(user_id=request.user.id)
-	info = {'nickname': user_info.nickname, 'motto': user_info.motto,
-			'first_name': user.first_name, 'last_name': user.last_name,
-			'sex': user_info.sex, 'birthday': user_info.birthday,
-			'address': user_info.address, 'email': user.email,}
-	context = {'account': user_info, 'info': info}
+	# ~ info = {'nickname': user_info.nickname, 'motto': user_info.motto,
+			# ~ 'first_name': user.first_name, 'last_name': user.last_name,
+			# ~ 'sex': user_info.sex, 'birthday': user_info.birthday,
+			# ~ 'address': user_info.address, 'email': user.email,}
+	
+	context = {'account': user_info, 'user': user}
 	return render(request, 'blog/account.html', context)
 
 @login_required
 def edit_photo(request):
 	user_info = UsersUserinfo.objects.get(user_id=request.user.id)
 	if request.method=='POST':
-		photo=request.FILES['photo']
+		photo=request.FILES['image_file']
 		if photo:
+			x1=float(request.POST.get('x1'))
+			y1=float(request.POST.get('y1'))
+			x2=float(request.POST.get('x2'))
+			y2=float(request.POST.get('y2'))
+			divsize = float(request.POST.get('divw'))
+			orisize = float(request.POST.get('filedim').split(' ')[0])
+			resize = orisize/divsize
+			
 			phototime = str(time.time()).split('.')[0]
 			photo_last = str(photo).split('.')[-1]
 			photoname = request.user.username + '/photos/%s.%s'%(phototime,photo_last)
 			img = Image.open(photo)
+			
+			#截取图片
+			region = img.crop((x1*resize, y1*resize, x2*resize, y2*resize))
 
 			#new user
 			SavePath = 'users/static/' + request.user.username + '/photos'
@@ -515,10 +539,10 @@ def edit_photo(request):
 				os.makedirs(SavePath)
 			
 			old_path = 'users/static/' + (UsersUserinfo.objects.get(user_id=request.user.id)).photo
-
 			if(os.path.exists(old_path)):
 				os.remove(old_path)
-			img.save('users/static/' + photoname)
+
+			region.save('users/static/' + photoname)
 			count = UsersUserinfo.objects.filter(user_id=request.user.id).update(photo=photoname)
 			if count:
 				return HttpResponseRedirect(reverse('blog:account'))
