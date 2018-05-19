@@ -23,6 +23,7 @@ function imgUpload(obj) {
 		{
 			alert('请至少选择图片或者输入微博');
 			document.getElementById(obj.txt).focus();
+			return false;
 		}
 		if(!limitNum(obj.num)){
 		  	alert("超过限制");

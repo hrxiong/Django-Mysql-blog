@@ -1,13 +1,10 @@
 {% extends "blog/base.html" %}
 {% block body %}
 
-<p>friends infomation</p>
+<h5>Friend Infomation</h5>
 
-	{% if info.is_friends %}
-	<button onclick="delete_friend('{{ info.username }}')" >delete</button>
-	{% else %}
-	<button><a href="{% url 'blog:add_by_username' info.username %}">add</a></button>
-	{% endif %}
+
+
 <!--
 	{% for key,value in info.items %}
 		{% if key == 'photo' %}
@@ -17,10 +14,67 @@
 		{% endif %}
 	{% endfor %}
 -->
-	<p><img src="/static/{{info.userinfo.photo}}" alt=""/></p>
-	<p>username:{{info.user.username}}</p>
-	<p>nickname:{{info.userinfo.nickname}}</p>
-	<p>motto:{{info.userinfo.motto}}</p>
+
+<div class="row">
+	<div class="col s12 m5">
+		<div class="card hoverable">
+			<div class="card-image " style="">
+				<a href="{% url 'blog:edit_photo' %}" ><img src="/static/{{info.userinfo.photo}}"/></a>
+			</div>
+			<div class="card-content">
+				<span>motto:</span>
+				<div style="word-wrap:break-word">
+					<h6>{{info.userinfo.motto}}</h6>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col s12 m7">
+		<div class="card hoverable">
+			<div class="card-content">
+				<table>
+					<tbody>
+						<tr>	
+							<td>nickname</td>
+							<td>{{info.userinfo.nickname}}</td>
+						</tr>
+						<tr>	
+							<td>first_name</td>
+							<td>{{info.userinfo.first_name}}</td>
+						</tr>
+						<tr>	
+							<td>last_name</td>
+							<td>{{info.userinfo.last_name}}</td>
+						</tr>
+						<tr>	
+							<td>gender</td>
+							<td>{{info.userinfo.sex}}</td>
+						</tr>
+						<tr>	
+							<td>birthday</td>
+							<td>{{info.userinfo.birthday}}</td>
+						</tr>
+						<tr>	
+							<td>email</td>
+							<td>{{info.userinfo.email}}</td>
+						</tr>
+						<tr>	
+							<td>address</td>
+							<td>{{info.userinfo.address}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="card-action">
+				{% if info.is_friends %}
+				<button onclick="delete_friend('{{ info.username }}')" class ="btn waves-effect waves-teal orange lighten-1" >delete</button>
+				{% else %}
+				<button><a href="{% url 'blog:add_by_username' info.username %}"  class ="btn waves-effect waves-teal orange lighten-1">add</a></button>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
 
 <script>
 function delete_friend(username){

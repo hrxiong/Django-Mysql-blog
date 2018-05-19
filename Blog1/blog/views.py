@@ -11,7 +11,7 @@ from .models import BlogsBlog, BlogPhoto, BlogComments
 from django.db import connection
 
 import os
-import time
+import time, datetime
 from operator import itemgetter
 from PIL import Image
 # Create your views here.
@@ -19,8 +19,7 @@ from PIL import Image
 def get_info_with_id(to_get_id):
 	user = User.objects.get(id=to_get_id)
 	user_info = UsersUserinfo.objects.get(user_id=to_get_id)
-	ret = {'username': user.username, 'nickname': user_info.nickname,
-			'sex': user_info.sex, 'motto': user_info.motto, 'photo': user_info.photo}
+	ret = {'userinfo': user_info, 'user':user }
 	return ret
 
 
@@ -29,7 +28,7 @@ def index(request):
 
 @login_required
 def mainpage(request):
-	context = {'account': UsersUserinfo.objects.get(user_id=request.user.id)}
+	context = {'account': UsersUserinfo.objects.get(user_id=request.user.id), 'user': request.user}
 	return render(request, 'blog/mainpage.html', context)
 
 
@@ -78,7 +77,7 @@ def blogs(request):
 	for blog in blogs:
 		blog_list.append(refactoringBlog(blog))
 
-	context = {'account': user_info, 'blogs': blog_list}
+	context = {'account': user_info, 'blogs': blog_list, 'user': request.user}
 	return render(request, 'blog/blogs.html', context)
 	
 @login_required
@@ -94,7 +93,7 @@ def my_blog(request):
 	for blog in blogs:
 		blog_list.append(refactoringBlog(blog))
 
-	context = {'account': user_info, 'blogs': blog_list}
+	context = {'account': user_info, 'blogs': blog_list, 'user': request.user}
 	return render(request, 'blog/blogs.html', context)
 
 @login_required
@@ -135,7 +134,7 @@ def new_blog(request):
 	else:
 		form = BlogForm()
 	
-	context = {'account': user_info, 'form': form}
+	context = {'account': user_info, 'form': form, 'user': request.user}
 	return render(request, 'blog/new_blog.html', context)
 	
 	
@@ -148,7 +147,7 @@ def edit_blog(request,blog_id):
 		form = BlogForm(request.POST)
 		if form.is_valid():
 			get_text = form.cleaned_data['text']
-			BlogsBlog.objects.filter(id=blog_id).update(text=get_text)
+			BlogsBlog.objects.filter(id=blog_id).update(text=get_text,createtime= datetime.datetime.now())
 			'''可以修改为加载原来的照片'''
 			#删除原来的照片
 			photos_to_delete = BlogPhoto.objects.filter(blog_id=blog_id)
@@ -190,7 +189,7 @@ def edit_blog(request,blog_id):
 		photos_to_delete = BlogPhoto.objects.filter(blog_id=blog_id)
 			#用户取消更新时，图片不能消失，利用数据库的cascade特性进行删除
 			#photos_to_delete.delete()
-	context = {'account': user_info, 'form': form}
+	context = {'account': user_info, 'form': form, 'user': request.user}
 	return render(request, 'blog/new_blog.html', context)
 
 
@@ -233,7 +232,7 @@ def comment_blog(request,blog_id):
 	else:
 		form = CommentForm()
 	
-	context = {'account': user_info, 'form': form, 'blog_id': blog_id}
+	context = {'account': user_info, 'form': form, 'blog_id': blog_id, 'user': request.user}
 	return render(request, 'blog/new_comment.html', context)
 
 @login_required
@@ -245,9 +244,9 @@ def edit_comment(request,comment_id):
 		form = CommentForm(request.POST)
 		if form.is_valid():
 			get_text = form.cleaned_data['text']
-			BlogComments.objects.filter(id=comment_id).update(text=get_text)
+			BlogComments.objects.filter(id=comment_id).update(text=get_text,createtime= datetime.datetime.now())
 			return HttpResponseRedirect(reverse('blog:blogs'))
-	context = {'account': user_info, 'form': form, 'comment_id': comment_id}
+	context = {'account': user_info, 'form': form, 'comment_id': comment_id, 'user': request.user}
 	return render(request, 'blog/edit_comment.html', context)
 
 @login_required
@@ -320,11 +319,11 @@ def friends(request):
 				else:
 					choose_info_list = info_list
 
-			context = {'account': user_info, 'info_list': choose_info_list, 'form': form}
+			context = {'account': user_info, 'info_list': choose_info_list, 'form': form, 'user': request.user}
 			return render(request, 'blog/friends.html', context)
 	else:
 		form = SearchFriendForm()
-	context = {'account': user_info, 'info_list': info_list, 'form': form}
+	context = {'account': user_info, 'info_list': info_list, 'form': form, 'user': request.user}
 	return render(request, 'blog/friends.html', context)
 
 @login_required
@@ -366,7 +365,7 @@ def friends_info(request,f_username):
 	'''info = {'photo': friend_info.photo, 'username': friend.username,
 			'nickname': friend_info.nickname, 'motto': friend_info.motto, 'is_friends': is_friends}'''
 	info = {'user': friend, 'userinfo': friend_info, 'is_friends': is_friends}
-	context = {'account': user_info, 'info': info}
+	context = {'account': user_info, 'info': info, 'user': request.user}
 	return render(request, 'blog/friends_info.html', context)
 
 @login_required
@@ -400,7 +399,7 @@ def add_by_username(request,add_username):
 	add_user_info = UsersUserinfo.objects.get(user_id=add_user.id)
 	user_info = UsersUserinfo.objects.get(user_id=user.id)
 	
-	context = {'account': user_info}
+	context = {'account': user_info, 'user': request.user}
 	
 	c1 = Friends.objects.filter(user1_id=user_info.id, user2_id=add_user_info.id)
 	c2 = Friends.objects.filter(user2_id=user_info.id, user1_id=add_user_info.id)
@@ -473,7 +472,7 @@ def get_message_list(user_info_id):
 @login_required
 def messages(request):
 	user_info = UsersUserinfo.objects.get(user_id=request.user.id)
-	context = {'account': user_info}
+	context = {'account': user_info, 'user': request.user}
 	
 	message = get_message_list(user_info.id)
 	context['message'] = message
@@ -551,7 +550,7 @@ def edit_photo(request):
 				return HttpResponseRedirect(reverse('blog:account'))
 		return HttpResponseRedirect(reverse('blog:account'))
 		#return HttpResponse('图片为空')
-	context = {'account': user_info}
+	context = {'account': user_info, 'user': request.user}
 	return render(request, 'blog/edit_photo.html', context)
 
 @login_required
@@ -586,7 +585,7 @@ def edit_account(request):
 						'birthday': user_info.birthday, 'address': user_info.address,
 						'motto': user_info.motto, 'sex': user_info.sex}
 		form = UserinfoForm(default_data)
-	context = {'account': user_info, 'form': form}
+	context = {'account': user_info, 'form': form, 'user': request.user}
 	return render(request, 'blog/edit_account.html', context)
 
 @login_required

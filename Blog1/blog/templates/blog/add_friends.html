@@ -1,35 +1,67 @@
 {% extends "blog/base.html" %}
 {% block body %}
-	<form method="post" action="{% url 'blog:add_friends' %}" enctype="multipart/form-data">
-	{% csrf_token %}
-	{% for field in form %}
-		<div class="fieldWrapper">
-			
+
+<div id="searchform" >
+	<div class="card">
+		<form method="post" action="{% url 'blog:add_friends' %}" enctype="multipart/form-data">
+			<div class="card-content"  >
+			{% csrf_token %}
+			{% for field in form %}
 			{{ field.label_tag }} {{ field }}{{ field.errors }}
-			
+			{% endfor %}
+			</div>
+			<div class="card-action"\style="center">
+			<button name="submit" class="btn  waves-effect waves-teal orange lighten-1">search</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+{% if not status %}
+	<h5>please input infomation to search user.</h5>
+{% elif info_list %}
+	{% for m in info_list %}
+		{% if info.user.username != user.username %}
+<div class="row">
+  <div class="col s12 m12">
+	<div class="card horizontal hoverable">
+	  <div class="card-image">
+		<img src="/static/{{m.userinfo.photo}}" alt=""/>
+	  </div>
+	  <div class="card-stacked">
+		<div class="card-content">
+		  <table>
+			  <tbody>
+				  <tr>	
+					<td>username</td>
+					<td>{{m.user.username}}</td>
+				  </tr>
+				  <tr>	
+					<td>nickname</td>
+					<td>{{m.userinfo.nickname}}</td>
+				  </tr>
+				  <tr>	
+					<td>motto</td>
+					<td>
+						<div style="word-wrap:break-word">
+							{{m.userinfo.motto}}
+						</div>
+					</td>
+				  </tr>
+			  </tbody>
+		  </table>
 		</div>
-		{% endfor %}
-		<div class="button-wrapper submit">
-			<button name="submit" class="btn btn-primary">search</button>
+		<div class="card-action">
+			<a href="{% url 'blog:add_by_username' m.user.username %}">add</a>
 		</div>
-	</form>
-	{% if not status %}
-		<p>please input infomation to search user.</p>
-	{% elif info_list %}
-		{% for info in info_list %}
-			{% if info.username != user.username %}
-				<a href="{% url 'blog:add_by_username' info.username %}">add</a>
-				{% for key,value in info.items %}
-					{% if key == 'photo' %}
-					<img src="/static/{{value}}" alt=""/>
-					{% else %}
-					<li> {{key}}:{{value}} </li>
-					{% endif %}
-				{% endfor %}
-			{% endif %}
-		{% endfor %}
-	{% else %}
-		<p>No such user.</p>
-	{% endif %}
+	  </div>
+	</div>
+  </div>
+</div>
+		{% endif %}
+	{% endfor %}
+{% else %}
+	<h5>No such user.</h5>
+{% endif %}
 
 {% endblock %}

@@ -22,7 +22,7 @@ function bytesToSize(bytes) {
 function checkForm() {
     if (parseInt($('#w').val()))
         return true;
-    $('.error').html('请先选择图片，并且截图').show();
+    $('.error').html('Choose image and crop please.').show();
     return false;
 }
 
@@ -54,13 +54,13 @@ function fileSelectHandler() {
     // check for image type (jpg and png are allowed)
     var rFilter = /^(image\/jpeg|image\/png|image\/jpg)$/i;
     if (!rFilter.test(oFile.type)) {
-        $('.error').html('请选择jpg、jpeg或png格式的图片').show();
+        $('.error').html('Please choose jpg,jpeg or png file.').show();
         return;
     }
 
     // check for file size
-    if (oFile.size > 1000 * 1024) {
-        $('.error').html('请上传小于1M的图片').show();
+    if (oFile.size > 10000 * 1024) {
+        $('.error').html('larger than 10M!').show();
         return;
     }
 

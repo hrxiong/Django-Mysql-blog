@@ -2,68 +2,125 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<meta name="Haoran's Blog" content="width=device-width, initial-scale=1"/>
-	<script src="{% static 'js/jQuery.js' %}"></script>
-	<script src="{% static 'js/materialize.js' %}"></script>
-	<link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="Haoran's Blog" content="width=device-width, initial-scale=1"/>
+		<script src="{% static 'js/jQuery.js' %}"></script>
+		<script src="{% static 'js/materialize.js' %}"></script>
+		<link rel="stylesheet" href="{% static 'css/materialize.min.css' %}">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	</head>
 <body>
 
-<!--
-  <nav> navbar content here </nav>
--->
-<nav>
-  <div class="nav-wrapper">
-    <a href="#!" class="brand-logo">Logo</a>
-    <ul class="right hide-on-med-and-down">
-      <li><a href="sass.html">Sass</a></li>
-      <li><a href="badges.html">Components</a></li>
-      <!-- Dropdown Trigger -->
-      <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Dropdown<i class="material-icons right">arrow_drop_down</i></a></li>
-    </ul>
-  </div>
-</nav>
+<style>
+	
+* ::-webkit-scrollbar {display:none}
+.header, .main, .footer .imgbox-wrap{
+	padding-left: 300px;
+}
 
-  <ul id="slide-out" class="sidenav">
-    <li><div class="user-view">
-      <div class="background">
-        <img src="images/office.jpg">
-      </div>
-      <a href="#user"><img class="circle" src="images/yuna.jpg"></a>
-      <a href="#name"><span class="white-text name">John Doe</span></a>
-      <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
-    </div></li>
-    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-    <li><a href="#!">Second Link</a></li>
-    <li><div class="divider"></div></li>
-    <li><a class="subheader">Subheader</a></li>
-    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
-  </ul>
-  <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+@media only screen and (max-width : 992px) {
+	.header, .main, .footer .imgbox-wrap{
+		padding-left: 0;
+	}
+}
+#myhp{
+	display:none;
+}
+@media only screen and (max-width : 992px) {
+	#myhp{
+		display: inline;
+	}
+}
+#head-in-nav{
+	width: 64px;
+	padding-left: 2px;
+}
+@media only screen and (max-width : 600px) {
+	#head-in-nav{
+		width: 58px;
+		padding-left: 1px;
+	}
+}
+</style>
+
+<ul id="slide-out" class="sidenav sidenav-fixed">
+<li>
+	<div class="user-view">
+		<div class="background">
+			<img src="/static/mypicture/background1.jpg" style="width:100%">
+		</div>
+		<a><img class="circle" src="/static/{{account.photo}}" ></a>
+		<a>
+			<span class="white-text name">
+				{% if account.nickname %}
+				{{ account.nickname }}
+				{% else %}
+				{{ user.username }}
+				{% endif %}
+			</span>
+		</a>
+		<a><span class="white-text email">{{user.email}}</span></a>
+	</div>
+</li>
+	<li>
+		<a class="subheader">Motto:</a>
+		<div class="container" style="word-wrap:break-word">
+			<p>{{account.motto}}</p>
+		</div>
+	</li>
+	<li>
+		<div class="divider"></div>
+	</li>
+	<li>
+		<a class="subheader">PAGES</a>
+	</li>
+	
+	<li><a class="waves-effect" href = "{% url 'blog:mainpage' %}">Mainpage</a></li>
+	
+	<li><a class="waves-effect" href = "{% url 'blog:blogs' %}">Blogs</a></li>
+
+	<li><a class="waves-effect" href = "{% url 'blog:friends' %}">Friends</a></li>
+
+	<li><a class="waves-effect" href = "{% url 'blog:messages' %}">Messages</a></li>
+
+	<li><a class="waves-effect" href = "{% url 'blog:account' %}">Account</a></li>
+	
+	<li><a class="waves-effect" href = "{% url 'users:logout' %}">Log out</a></li>
+
+</ul>
+
+<div class="main">
+
+	<nav class="brown lighten-2">
+		<div class="nav-wrapper">
+			<a class="sidenav-trigger brand-logo"  id="myhp" data-target="slide-out">
+				<img id="head-in-nav" src="/static/{{account.photo}}" alt="" class="circle" >
+			</a>
+			<ul class="right hide-on-med-and-down">
+				<li><a>Hello,{{user.username}}.</a></li>
+				{% block navhide %}{% endblock %}
+			</ul>
+			<ul class="right">
+				{% block navfix %}{% endblock %}
+			</ul>
+		</div>
+	</nav>
+	
+
+	<div id="bodycontainer" class="container">
+		{% block body %}
+		{% endblock %}
+
+	</div>
+</div>
 
 <script>
 $(document).ready(function(){
 	$('.sidenav').sidenav();
+	$('.dropdown-trigger').dropdown();
 });
 </script>
-	
-	<p>upper</p>
-	<a>Hello,{{user.username}}.</a>
-	<a href = "{% url 'users:logout' %}">log out</a>
-	<img src="/static/{{account.photo}}" alt=""/> 
-
-	<p>index</p>
-	<a href = "{% url 'blog:mainpage' %}">mainpage</a>
-	<a href = "{% url 'blog:blogs' %}">blogs</a>
-	<a href = "{% url 'blog:friends' %}">friends</a>
-	<a href = "{% url 'blog:messages' %}">messages</a>
-	<a href = "{% url 'blog:account' %}">account</a>
-	<p>body</p>
-	{% block body %}
-	{% endblock %}
 
 </body>
 </html>

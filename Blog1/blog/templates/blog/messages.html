@@ -1,45 +1,63 @@
 {% extends "blog/base.html" %}
 {% block body %}
 
-<p>messages list</p>
-
 {% for m in message %}
-	
+<div class="row">
+  <div class="col s12 m12">
+    <div class="card horizontal hoverable">
+      <div class="card-image">
+        <img src="/static/{{m.userinfo.photo}}" alt=""/>
+      </div>
+      <div class="card-stacked">
+        <div class="card-content">
+          <table>
+			  <tbody>
+				  <tr>	
+					<td>username</td>
+					<td>{{m.user.username}}</td>
+				  </tr>
+				  <tr>	
+					<td>nickname</td>
+					<td>{{m.userinfo.nickname}}</td>
+				  </tr>
+				  <tr>	
+					<td>motto</td>
+					<td>
+						<div style="word-wrap:break-word">
+							{{m.userinfo.motto}}
+						</div>
+					</td>
+				  </tr>
+			  </tbody>
+          </table>
+        </div>
+        <div class="card-action">
+          	{% if m.status == 0 %}
+			<p>The add request have been sent.Please wait.</p>
+			{% elif m.status == 1 %}
+			<p>added.</p>
+			{% elif m.status == 2 %}
+			<p>failed</p>
+			{% elif m.status == 3 %}
+			<p>请求添加你为好友！</p>
 
-<!--
-	{% for key,value in m.items %}
-		{% if key == 'photo' %}
-		<img src="/static/{{value}}" alt=""/>
-		{% elif key != 'status' and key !=  'checkid' %}
-		<li> {{key}}:{{value}} </li>
-		{% endif %}
-	{% endfor %}
--->
-	<p><img src="/static/{{m.userinfo.photo}}" alt=""/></p>
-	<p>username:{{m.user.username}}</p>
-	<p>nickname:{{m.userinfo.nickname}}</p>
-	<p>motto:{{m.userinfo.motto}}</p>
-	
-	{% if m.status == 0 %}
-	<p>The add request have been sent.Please wait.</p>
-	{% elif m.status == 1 %}
-	<p>added.</p>
-	{% elif m.status == 2 %}
-	<p>failed</p>
-	{% elif m.status == 3 %}
-	<p>请求添加你为好友！</p>
+			<p><!--
+				<button onclick="sendmessage('add', '{{m.checkid}}')" > add </button>
+				<button onclick="sendmessage('refuse', '{{m.checkid}}')" > refuse </button>-->
+				<a href="{% url 'blog:message_op' m.checkid 0 %}" class="btn  waves-effect waves-teal orange lighten-1">add</a>
+				<a href="{% url 'blog:message_op' m.checkid 1 %}" class="btn  waves-effect waves-teal orange lighten-1">refuse</a>
+			</p>
+			{% elif m.status == 4 %}
+			<p>added.</p>
+			{% elif m.status == 5 %}
+			<p>refused.</p>
+			{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-	<p><!--
-		<button onclick="sendmessage('add', '{{m.checkid}}')" > add </button>
-		<button onclick="sendmessage('refuse', '{{m.checkid}}')" > refuse </button>-->
-		<button><a href="{% url 'blog:message_op' m.checkid 0 %}">add</a>  </button>
-		<button><a href="{% url 'blog:message_op' m.checkid 1 %}">refuse</a>  </button>
-	</p>
-	{% elif m.status == 4 %}
-	<p>added.</p>
-	{% elif m.status == 5 %}
-	<p>refused.</p>
-	{% endif %}
 {% endfor %}
 
 <script>/*

@@ -1,6 +1,80 @@
 {% extends "blog/base.html" %}
 {% block body %}
 
-this is mainpage
+<!--
+  <div class="carousel carousel-slider center">
+    <div class="carousel-fixed-item center">
+      <a class="btn waves-effect white grey-text darken-text-2">button</a>
+    </div>
+    <div class="carousel-item red white-text" href="#one!">
+      <h2>First Panel</h2>
+      <p class="white-text">This is your first panel</p>
+    </div>
+    <div class="carousel-item amber white-text" href="#two!">
+      <h2>Second Panel</h2>
+      <p class="white-text">This is your second panel</p>
+    </div>
+    <div class="carousel-item green white-text" href="#three!">
+      <h2>Third Panel</h2>
+      <p class="white-text">This is your third panel</p>
+    </div>
+    <div class="carousel-item blue white-text" href="#four!">
+      <h2>Fourth Panel</h2>
+      <p class="white-text">This is your fourth panel</p>
+    </div>
+  </div>
+-->
+  <div class="card hoverable">
+    <div class="card-image waves-effect waves-block waves-light">
+      <img class="activator" src="/static/mypicture/friend.jpg">
+    </div>
+    <div class="card-content">
+      <span class="card-title activator grey-text text-darken-4"><strong>Contact</strong><i class="material-icons right">more_vert</i></span>
+      <p><a href="{% url 'blog:add_friends' %}">Add new Friend</a></p>
+    </div>
+    <div class="card-reveal">
+      <span class="card-title grey-text text-darken-4">Contact<i class="material-icons right">close</i></span>
+      <p>Here you can search and add a new friend.</p>
+    </div>
+  </div>
+  
+  
+  <div class="card hoverable">
+    <div class="card-image waves-effect waves-block waves-light">
+      <img class="activator" src="/static/mypicture/shanghai.jpg">
+    </div>
+    <div class="card-content">
+      <span class="card-title activator grey-text text-darken-4"><strong>Share</strong><i class="material-icons right">more_vert</i></span>
+      <p><a href="{% url 'blog:new_blog' %}">Share something</a></p>
+    </div>
+    <div class="card-reveal">
+      <span class="card-title grey-text text-darken-4">Share<i class="material-icons right">close</i></span>
+      <p>Here you can send something you want to share with your friends.</p>
+    </div>
+  </div>
+  
+  
+  <div class="card hoverable">
+    <div class="card-image waves-effect waves-block waves-light">
+      <img class="activator" src="/static/mypicture/timg.jpg">
+    </div>
+    <div class="card-content">
+      <span class="card-title activator grey-text text-darken-4"><strong>Enjoy</strong><i class="material-icons right">more_vert</i></span>
+      <p><a href="{% url 'blog:blogs' %}">Show something</a></p>
+    </div>
+    <div class="card-reveal">
+      <span class="card-title grey-text text-darken-4">Enjoy<i class="material-icons right">close</i></span>
+      <p>Here you can enjoy the sharing of your friends.</p>
+    </div>
+  </div>
+
+<script>
+ //~ $('.carousel.carousel-slider').carousel({
+	//~ fullWidth: true,
+	//~ indicators: true
+//~ });
+
+
+</script>
 
 {% endblock %}

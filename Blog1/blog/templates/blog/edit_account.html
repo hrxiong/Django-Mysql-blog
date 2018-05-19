@@ -3,20 +3,26 @@
 
 
 {% block body %}
-<div class="form-wrapper">
-   <form method="post" action="{% url 'blog:edit_account' %}" enctype="multipart/form-data">
-      {% csrf_token %}
-      {% for field in form %}
-           <div class="fieldWrapper">
-			{{ field.label_tag }} {{ field }}{{ field.errors }}
-		   </div>
-		{% endfor %}
-      <div class="button-wrapper submit">
-         <button name="submit" class="btn btn-primary">save change</button>
-      </div>
-   </form>
-</div>
 
+<form method="post" action="{% url 'blog:edit_account' %}" enctype="multipart/form-data">
+	<div class="row">
+		<div class="col s12 m8 offset-m2">
+			<div class="card hoverable">
+				<div class="card-content">
+					{% csrf_token %}
+					{% for field in form %}
+						<div class="fieldWrapper">
+							{{ field.label_tag }} {{ field }}{{ field.errors }}
+						</div>
+					{% endfor %}
+				</div>
+				<div class="card-action">
+					<button name="submit" class="btn waves-effect waves-teal orange lighten-1">save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
 <script>
 $(document).ready(function(){
 	$('.datepicker').datepicker({
