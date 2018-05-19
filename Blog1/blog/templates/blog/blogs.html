@@ -12,9 +12,11 @@
 
 {% block body %}
 <link rel="stylesheet" href="{% static 'css/viewer.min.css' %}">
+
 <style type="text/css" media="screen">  
 *{margin:0;padding:0;}
 .box{
+  margin:2%;
   display: flex;
   flex-wrap: wrap;
 }
@@ -43,63 +45,118 @@
 
 
 
-<h2>Friendss' Sharing</h2>
-{% for blog in blogs %}
+<h2 class="center">Friends' Sharing</h2>
 
-<div class="row">
-  <div class="col m12 s12">
-	<div class="card">
-		<div class="card-content">
+
+{% for blog in blogs %}
+<!--
+blog微博部分
+-->
+  <div class="col s12 m12">
+	<div class="card-panel grey lighten-4 z-depth-1">
+	  <div class="row valign-wrapper">
+		<div class="col s4 m2">
+		  <img src="/static/{{blog.senduser.photo}}"alt="" class="circle responsive-img z-depth-1">
 		</div>
+		<div class="col s6 m3">
+		  <h5 class="black-text">
+			{% if blog.senduser.nickname %}
+			{{blog.senduser.nickname}}
+			{% else %}
+			{{blog.user.username}}
+			{% endif %}
+		  </h5>
+		</div>
+		<div class="col s6 m3">
+			<label>
+				{{blog.time}}
+			</label>
+		</div>
+		<div class="col s4 m2">
+			{% if blog.senduser.id == account.id %}
+			<a href="{% url 'blog:edit_blog' blog.id %}" class="btn waves-effect waves-teal orange lighten-1">edit</a>
+			{% endif %}
+		</div>
+		<div class="col s4 m2">
+			{% if blog.senduser.id == account.id %}
+			<a href="{% url 'blog:delete_blog' blog.id %}" class="btn waves-effect waves-teal orange lighten-1">delete</a>
+			{% endif %}
+		</div>
+	  </div>
+	  <div class="card-content" style="word-wrap:break-word">
+		  <h6>{{blog.content}}</h6>
+	  </div>
+	  <div class="row">
+		<div class="col s12 m12">
+			<div class="box jq22" >
+				{% for ph in blog.photo %}
+				<span>
+					<img src="/static/{{ph.photo}}" alt="" class="z-depth-1">
+				</span>
+				{% endfor %}
+			</div>
+		</div>
+	  </div>
+	  <div class="row">
+		<div class="col s12 m12">
+		  <div class="right">
+			<a href="{% url 'blog:comment_blog' blog.id %}" class="btn waves-effect waves-teal orange lighten-1">comment</a>
+		  </div>
+		</div>
+	  </div>
+<!--
+blog评论部分
+-->
+	{% for comment in blog.comments %}
+	<div class="col s12 m12">
+		  <div class="card-panel">
+			<div class="row valign-wrapper">
+			  <div class="col s4 m2">
+				<img src="/static/{{comment.comment_userinfo.photo}}" alt="" class="circle responsive-img z-depth-1" />
+			  </div>
+			  <div class="col s6 m3">
+				<h5 class="black-text">
+				{% if comment.comment_userinfo.nickname %}
+				{{comment.comment_userinfo.nickname}}
+				{% else %}
+				{{comment.comment_user.username}}
+				{% endif %}
+				</h5>
+			  </div>
+			  <div class="col s6 m3">
+				  <label>
+					{{comment.comment.createtime}}
+				  </label>
+			  </div>
+			  <div class="col s4 m2">
+				{% if comment.comment_userinfo.id == account.id %}
+				<a href="{% url 'blog:edit_comment' comment.comment.id %}" class="btn waves-effect waves-teal orange lighten-1">edit</a>
+				{% endif %}
+			  </div>
+			  <div class="col s4 m2">
+				{% if comment.comment_userinfo.id == account.id or blog.senduser.id == account.id %}
+				<a href="{% url 'blog:delete_comment' comment.comment.id %}" class="btn waves-effect waves-teal orange lighten-1">delete</a>
+				{% endif %}
+			  </div>
+			</div>
+			<div class="card-content" style="word-wrap:break-word">
+			   <span>{{comment.comment.text}}</span>
+			</div>
+		 </div>
+	 </div>
+	{% endfor %}
+
 	</div>
   </div>
-</div> 
-
-
-
-
-      <div class="col s12 m8 offset-m2 l6 offset-l3">
-        <div class="card-panel grey lighten-5 z-depth-1">
-          <div class="row valign-wrapper">
-            <div class="col s2">
-              <img src="images/yuna.jpg" alt="" class="circle responsive-img">
-            </div>
-            <div class="col s10">
-              <span class="black-text">
-                {% if blog.senduser.nickname %}
-				{{blog.senduser.nickname}}
-				{% else %}
-				{{blog.user.username}}
-				{% endif %}
-              </span>
-            </div>
-          </div>
-					<div class="row valign-wrapper">
-            <div class="col s2">
-              <img src="images/yuna.jpg" alt="" class="circle responsive-img">
-            </div>
-            <div class="col s10">
-              <span class="black-text">
-                This is a square image. Add the "circle" class to it to make it appear circular.
-              </span>
-            </div>
-          </div>
-                    <div class="row valign-wrapper">
-            <div class="col s2">
-              <img src="images/yuna.jpg" alt="" class="circle responsive-img">
-            </div>
-            <div class="col s10">
-              <span class="black-text">
-                This is a square image. Add the "circle" class to it to make it appear circular.
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+<!--
 
 
 	<p>//////////////////////blog</p>
-	
+	{% if blog.senduser.nickname %}
+	{{blog.senduser.nickname}}
+	{% else %}
+	{{blog.user.username}}
+	{% endif %}
 	{% if blog.senduser.id == account.id %}
 	<a href="{% url 'blog:delete_blog' blog.id %}">delete</a>
 	<a href="{% url 'blog:edit_blog' blog.id %}">edit</a>
@@ -137,15 +194,12 @@
 		<p>{{comment.comment.text}}</p>
 		<p>//////////////////commendend</p>
 	{% endfor %}
+-->
 {% endfor %}
-
-
-
-
 
 <script src="{% static 'js/viewer-jquery.min.js' %}"></script>
 <script>
-$('#jq22').viewer();
+$('.jq22').viewer();
 </script>
 
 {% endblock %}

@@ -142,6 +142,8 @@ def new_blog(request):
 def edit_blog(request,blog_id):
 	user_info = UsersUserinfo.objects.get(user_id=request.user.id)
 	blog_to_edit = BlogsBlog.objects.get(id=blog_id)
+	if blog_to_edit.users_userinfo_id != user_info.id:
+		raise Http404
 	form = BlogForm({'text':blog_to_edit.text})
 	if request.method == 'POST':
 		form = BlogForm(request.POST)
@@ -238,13 +240,18 @@ def comment_blog(request,blog_id):
 @login_required
 def edit_comment(request,comment_id):
 	user_info = UsersUserinfo.objects.get(user_id=request.user.id)
-	old_text = BlogComments.objects.get(id=comment_id).text
+	old_comment = BlogComments.objects.get(id=comment_id)
+
+	if old_comment.creator_id != user_info.id:
+		raise Http404
+	old_text = old_comment.text
 	form = CommentForm({'text': old_text})
 	if request.method == 'POST':
 		form = CommentForm(request.POST)
 		if form.is_valid():
 			get_text = form.cleaned_data['text']
-			BlogComments.objects.filter(id=comment_id).update(text=get_text,createtime= datetime.datetime.now())
+			BlogComments.objects.filter(id=comment_id).update(text=get_text,createtime=datetime.datetime.now(),
+														blog_id=old_comment.blog_id,creator_id=old_comment.creator_id)
 			return HttpResponseRedirect(reverse('blog:blogs'))
 	context = {'account': user_info, 'form': form, 'comment_id': comment_id, 'user': request.user}
 	return render(request, 'blog/edit_comment.html', context)

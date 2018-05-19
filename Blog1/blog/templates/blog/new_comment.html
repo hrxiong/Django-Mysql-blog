@@ -1,10 +1,11 @@
 {% extends "blog/base.html" %}
 {% block body %}
-
-<form action="{% url 'blog:comment_blog' blog_id %}" method="POST" enctype="multipart/form-data">
-	{% csrf_token %}
-	{{ form }}
-	<button id="send_comment" class="btn btn-danger" type="submit">comment</button>
-	<input type="hidden" name="next" value="{% url 'blog:blogs' %}" />
-</form>
+<div class="container" style="margin:5%">
+	<form action="{% url 'blog:comment_blog' blog_id %}" method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+		{{ form }}
+		<button id="send_comment" class="btn btn-danger right" type="submit">comment</button>
+		<input type="hidden" name="next" value="{% url 'blog:blogs' %}" />
+	</form>
+</div>
 {% endblock %}
