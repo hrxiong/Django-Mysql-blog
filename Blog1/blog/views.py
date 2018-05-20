@@ -5,16 +5,21 @@ from .forms import UserinfoForm, PwdChangeForm, AddFriendForm, SearchFriendForm,
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.urls import reverse
 from .models import BlogsBlog, BlogPhoto, BlogComments
 from django.db import connection
+from django.forms.models import model_to_dict
 
 import os
 import time, datetime
+import json
 from operator import itemgetter
 from PIL import Image
 # Create your views here.
+
+class Mem:
+	cur = {}
 
 def get_info_with_id(to_get_id):
 	user = User.objects.get(id=to_get_id)
@@ -30,18 +35,31 @@ def index(request):
 def mainpage(request):
 	context = {'account': UsersUserinfo.objects.get(user_id=request.user.id), 'user': request.user}
 	return render(request, 'blog/mainpage.html', context)
+	
 
+class CJsonEncoder(json.JSONEncoder):
+	def default(self, obj):
+		if isinstance(obj, datetime.datetime):
+			return obj.strftime('%Y-%m-%d %H:%M:%S')
+		elif isinstance(obj, datetime.date):
+			return obj.strftime('%Y-%m-%d')
+		else:
+			return json.JSONEncoder.default(self, obj)
 
 def refactoringBlog(obj):
 	temp = {}
 	#blog info
 	temp['id'] = obj[0]
-	temp['senduser'] = UsersUserinfo.objects.get(id=obj[1])
+	temp['senduser'] = model_to_dict(UsersUserinfo.objects.get(id=obj[1]))
 	#temp['username'] = User.objects.get(id=temp['senduser'].user_id).username
-	temp['user'] = User.objects.get(id=temp['senduser'].user_id)
+	temp['user'] = model_to_dict(User.objects.get(id=temp['senduser']['user']))
 	temp['content'] = obj[2]
 	temp['time'] = obj[3]
-	temp['photo'] = BlogPhoto.objects.filter(blog_id=obj[0])
+	photo = []
+	tempphotos = BlogPhoto.objects.filter(blog_id=obj[0])
+	for p in tempphotos:
+		photo.append(model_to_dict(p))
+	temp['photo'] = photo
 	
 	#comments info
 	blog = BlogsBlog.objects.get(id=obj[0])
@@ -49,11 +67,13 @@ def refactoringBlog(obj):
 	coms = []
 	for comment in comments:
 		com = {}
-		com['comment_userinfo'] = UsersUserinfo.objects.get(id=comment.creator_id)
+		com['comment_userinfo'] = model_to_dict(UsersUserinfo.objects.get(id=comment.creator_id))
 		#com['comment_username'] = User.objects.get(id=com['comment_userinfo'].user_id).username
-		com['comment_user'] = User.objects.get(id=com['comment_userinfo'].user_id)
-		com['comment'] = comment
+		com['comment_user'] = model_to_dict(User.objects.get(id=com['comment_userinfo']['user']))
+		com['comment'] = model_to_dict(comment)
+		com['time'] = comment.createtime
 		coms.append(com)
+	coms = sorted(coms, key=itemgetter('time'))
 	temp['comments'] = coms
 	
 	return temp
@@ -61,8 +81,21 @@ def refactoringBlog(obj):
 @login_required
 def blogs(request):
 	user_info = UsersUserinfo.objects.get(user_id=request.user.id)
-	cur = connection.cursor()
-	cur.execute(""" select * 
+	user = request.user
+	if request.method == "POST":
+		mem = Mem()
+		blog_list = []
+		for i in range(0,10):
+			blog = mem.cur[user.username].fetchone()
+			if blog:
+				blog_list.append(refactoringBlog(blog))
+			else:
+				break;
+		data = json.dumps({'acc':model_to_dict(user_info), 'blog_list': blog_list}, cls=CJsonEncoder)
+		return HttpResponse(data)
+	Mem.cur[user.username] = connection.cursor()
+	mem = Mem()
+	mem.cur[user.username].execute(""" select * 
 					from blogs_blog 
 					where users_userinfo_id = %s 
 						  or 
@@ -72,12 +105,18 @@ def blogs(request):
 						  users_userinfo_id in 
 						  (select Y.user2 from friends as Y where Y.user1 = %s) 
 					order by createtime desc;""",[str(user_info.id),str(user_info.id),str(user_info.id)])
-	blogs = cur.fetchall()
 	blog_list = []
-	for blog in blogs:
-		blog_list.append(refactoringBlog(blog))
-
-	context = {'account': user_info, 'blogs': blog_list, 'user': request.user}
+	for i in range(0,10):
+		blog = mem.cur[user.username].fetchone()
+		if blog:
+			blog_list.append(refactoringBlog(blog))
+		else:
+			break;
+	
+	
+	# ~ , 'cursor': json.dumps({'cursor':cur})
+	context = {'account': user_info, 'blog_list': json.dumps(blog_list, cls=CJsonEncoder),
+			'user': user, 'acc':json.dumps(model_to_dict(user_info), cls=CJsonEncoder)}
 	return render(request, 'blog/blogs.html', context)
 	
 @login_required
@@ -93,7 +132,7 @@ def my_blog(request):
 	for blog in blogs:
 		blog_list.append(refactoringBlog(blog))
 
-	context = {'account': user_info, 'blogs': blog_list, 'user': request.user}
+	context = {'account': user_info, 'blogs': blog_list, 'user': request.user, 'acc': user_info}
 	return render(request, 'blog/blogs.html', context)
 
 @login_required
